@@ -9,7 +9,7 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Runtime data
+# Runtime dataff
 pids
 *.pid
 *.seed
@@ -69,7 +69,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
