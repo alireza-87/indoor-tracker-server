@@ -24,7 +24,7 @@ let connection = function Broker() {
 
 
     server.on('clientConnected', function (client) {
-        console.log('new scanner : clientConnected');
+        console.log('new connection : clientConnected => ',client.id);
         let dibrisScannerPattern = new RegExp(/^scanner\/[0-9]*\/[0-9]*$/);
         let arrMatches = client.id.match(dibrisScannerPattern);
         if (arrMatches) {
@@ -34,6 +34,7 @@ let connection = function Broker() {
             storage.insertScanner(floor,room)
 
         }
+
     });
 
     server.on('clientDisconnected', function (client) {
@@ -50,8 +51,20 @@ let connection = function Broker() {
     });
 
     server.on('published', function (packet, client) {
-        console.log('published');
         if (client!=null){
+            let dashboardCommandPattern = new RegExp(/^dashboard\/command$/);
+            if(packet.topic.match(dashboardCommandPattern)){
+                let data=JSON.parse(packet.payload.toString())
+                switch(data.type){
+                    case "addRoom":
+                        storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid)
+                        break
+                        default:
+                            break
+                }
+                //console.log('published',packet);
+            }
+    
         }
     });
 

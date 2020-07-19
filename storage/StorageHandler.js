@@ -83,15 +83,17 @@ class StorageHandler{
         });
     }
 
-    insertScanner(floor,room){
+    insertScanner(name,floor,room,capacity,sensorid){
 
         let data = new ScannerSchema({
             isConnected: 1,
             floor: floor,
             room: room,
+            name: name,
+            capacity:capacity,
+            sensorid:sensorid
         })
-
-        db.collection("model_scanner").findOne({floor:floor,room:room}, function(err, result){
+        db.collection("model_scanner").findOne({sensorid:sensorid}, function(err, result){
             if (result === null) {
                 console.log("cant find - insertScanner")
                 db.collection("model_scanner").insertOne(data,(err,res)=>{
@@ -107,8 +109,8 @@ class StorageHandler{
                 })
             } else {
                 console.log("scanner find - insertScanner")
-                let new_values = { $set: {isConnected: 1} };
-                db.collection("model_scanner").updateOne({floor:floor,room:room},new_values,(error,result)=>{
+                let new_values = { $set: {name:name,floor:floor,room:room,isConnected: 1} };
+                db.collection("model_scanner").updateOne({sensorid:sensorid},new_values,(error,result)=>{
                     console.log("scanner update - insertScanner")
                     if (scannerCache.get(floor+"/"+room)) {
                         let array=scannerCache.get(floor+"/"+room)
