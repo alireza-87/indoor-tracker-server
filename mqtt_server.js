@@ -57,6 +57,7 @@ let connection = function Broker() {
                 let cId=packet.topic.split('/')[1]
                 console.log("clientID =====> ",cId)
                 let data=JSON.parse(packet.payload.toString())
+                console.log("data =====> ",data)
                 switch(data.type){
                     case "addRoom":
                         storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e)=>{
@@ -66,6 +67,14 @@ let connection = function Broker() {
                             }else{
                                 const topic='dashboard/'+cId+'/result/fail'
                                 server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
+                            }
+                        })
+                        break
+                    case "getRoomList":
+                        storage.getAllScanners((err,res)=>{
+                            if(err==null){
+                                const topic='dashboard/'+cId+'/data/roomList'
+                                server.publish({topic:topic, payload:JSON.stringify({result:res})})
                             }
                         })
                         break

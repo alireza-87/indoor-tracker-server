@@ -126,6 +126,13 @@ class StorageHandler{
             }
         });
     }
+
+    getAllScanners(delegate){
+        db.collection("model_scanner").find({}).toArray(function(err,res){
+            delegate(err,res)
+        })
+
+    }
     init(){
         db = dbs.Get();
     }
