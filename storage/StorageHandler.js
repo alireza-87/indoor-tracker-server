@@ -83,7 +83,7 @@ class StorageHandler{
         });
     }
 
-    insertScanner(name,floor,room,capacity,sensorid){
+    insertScanner(name,floor,room,capacity,sensorid,delegate){
 
         let data = new ScannerSchema({
             isConnected: 1,
@@ -93,6 +93,7 @@ class StorageHandler{
             capacity:capacity,
             sensorid:sensorid
         })
+        delegate()
         db.collection("model_scanner").findOne({sensorid:sensorid}, function(err, result){
             if (result === null) {
                 console.log("cant find - insertScanner")

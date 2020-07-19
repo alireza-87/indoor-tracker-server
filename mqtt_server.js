@@ -52,12 +52,17 @@ let connection = function Broker() {
 
     server.on('published', function (packet, client) {
         if (client!=null){
-            let dashboardCommandPattern = new RegExp(/^dashboard\/command$/);
+            let dashboardCommandPattern = new RegExp(/^command\/c\/s$/);
             if(packet.topic.match(dashboardCommandPattern)){
                 let data=JSON.parse(packet.payload.toString())
                 switch(data.type){
                     case "addRoom":
-                        storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid)
+                        storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e)=>{
+                            if(e==null)
+                                server.publish({topic:"dashboard/result/success", payload:JSON.stringify({result:"done"})})
+                            else
+                                server.publish({topic:"dashboard/result/fail", payload:JSON.stringify({result:"fail"})})
+                        })
                         break
                         default:
                             break
