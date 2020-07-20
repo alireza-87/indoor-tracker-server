@@ -114,6 +114,7 @@ let connection = function Broker() {
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
                 storage.insertClient(floor,room,clientId,Date.now())
+                //server.publish({topic:"update/room",payload:JSON.stringify({"result":{"count":"333","room":"123","floor":"123"}})})
             }else if (enteranceMatches){
                 let floor=topic.split('\/')[2]
                 let room=topic.split('\/')[3]
