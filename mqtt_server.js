@@ -77,7 +77,21 @@ let connection = function Broker() {
                                 server.publish({topic:topic, payload:JSON.stringify({result:res})})
                             }
                         })
-                        break
+                        break;
+                    case "getRoomCount":
+                        storage.getCurrentOccupideInRoom(data.floor,data.room,(err,res) =>{
+                            if(err==null){
+                                const topic='dashboard/'+cId+'/data/roomCount'
+                                const answer={
+                                    count:res,
+                                    room:data.room,
+                                    floor:data.floor
+                                }
+                                console.log(JSON.stringify({result:answer}))
+                                server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                            }
+                        })
+                        break;
                         default:
                             break
                 }
@@ -90,11 +104,10 @@ let connection = function Broker() {
     server.on('subscribed', function (topic, client) {
         if (client!=null) {
             let dibrisRoomPattern = new RegExp(/^\/dibrisbuilding\/[0-9]*\/[0-9]*\/[0-9A-Z-]*$/);
-            let dibrisEntrancePattern = new RegExp(/^\/dibrisbuilding\/[0-9]*\/entrance\/[0-9A-Z-]*$/);
-            let dibrisExitPattern = new RegExp(/^\/dibrisbuilding\/[0-9]*\/corridor\/[0-9A-Z-]*$/);
+            let dibrisEntrancePattern = new RegExp(/^\/dibrisbuilding\/[0-9]*\/[0-9A-Z-]*\/[0-9A-Z-]*$/);
+            //let dibrisExitPattern = new RegExp(/^\/dibrisbuilding\/[0-9]*\/corridor\/[0-9A-Z-]*$/);
             let arrMatches = topic.match(dibrisRoomPattern);
             let enteranceMatches = topic.match(dibrisEntrancePattern);
-            let exitMatches = topic.match(dibrisExitPattern);
             if (arrMatches){
                 console.log('new Client : ',topic);
                 let floor=topic.split('\/')[2]
@@ -103,12 +116,9 @@ let connection = function Broker() {
                 storage.insertClient(floor,room,clientId,Date.now())
             }else if (enteranceMatches){
                 let floor=topic.split('\/')[2]
+                let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
-                storage.insertClient(floor,"entrance",clientId,Date.now())
-            }else if(exitMatches){
-                let floor=topic.split('\/')[2]
-                let clientId=topic.split('\/')[4]
-                storage.insertClient(floor,"corridor",clientId,Date.now())
+                storage.insertClient(floor,room,clientId,Date.now())
             }
         }
 

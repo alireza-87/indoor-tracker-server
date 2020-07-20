@@ -133,6 +133,15 @@ class StorageHandler{
         })
 
     }
+
+    getCurrentOccupideInRoom(floor,room,delegate){
+        console.log(floor,' , ',room)
+
+        db.collection("model_client").find({floor:floor,room:room}).toArray(function (err,res){
+            console.log(res.length)
+            delegate(err,res.length)
+        })
+    }
     init(){
         db = dbs.Get();
     }
