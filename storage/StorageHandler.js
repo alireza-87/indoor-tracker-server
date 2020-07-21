@@ -39,7 +39,7 @@ class StorageHandler{
 
     }
 
-    turnOffClient(floor,room,clientId,time){
+    turnOffClient(floor,room,clientId,time,delegate){
         db.collection("model_client").findOne({clientId: clientId,floor:floor,room:room},{ sort: { 'created_at' : -1 } },function (err, result) {
             console.log("turnOffClient")
             if (err!=null){
@@ -51,12 +51,13 @@ class StorageHandler{
                     if (result==null){
                         console.log("turnOffClient update")
                     }
+                    delegate()
                 })
             }
         })
     }
 
-    insertClient(floor,room,clientId,time){
+    insertClient(floor,room,clientId,time,delegate){
 
         let data = new ClientSchema({
             clientId: clientId,
@@ -79,6 +80,7 @@ class StorageHandler{
                     myCache.set(floor+"/"+room,array)
                 }
                 console.log("insert clint success")
+                delegate()
             }
         });
     }
@@ -136,7 +138,7 @@ class StorageHandler{
     getCurrentOccupideInRoom(floor,room,delegate){
         console.log(floor,' , ',room)
 
-        db.collection("model_client").find({floor:floor,room:room}).toArray(function (err,res){
+        db.collection("model_client").find({floor:floor,room:room,isConnected:1}).toArray(function (err,res){
             console.log(res.length)
             delegate(err,res.length)
         })

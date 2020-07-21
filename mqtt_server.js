@@ -113,13 +113,28 @@ let connection = function Broker() {
                 let floor=topic.split('\/')[2]
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
-                storage.insertClient(floor,room,clientId,Date.now())
-                //server.publish({topic:"update/room",payload:JSON.stringify({"result":{"count":"333","room":"123","floor":"123"}})})
+                storage.insertClient(floor,room,clientId,Date.now(), () => {
+                    storage.getCurrentOccupideInRoom(floor,room,(err,res) =>{
+                        if(err==null){
+                            const topic='update/room'
+                            const answer={
+                                count:res,
+                                room:room,
+                                floor:floor
+                            }
+                            console.log(JSON.stringify({result:answer}))
+                            server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                        }
+                    })
+                })
+                
             }else if (enteranceMatches){
                 let floor=topic.split('\/')[2]
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
-                storage.insertClient(floor,room,clientId,Date.now())
+                storage.insertClient(floor,room,clientId,Date.now(),() => {
+
+                })
             }
         }
 
@@ -134,7 +149,22 @@ let connection = function Broker() {
                 let floor=topic.split('\/')[2]
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
-                storage.turnOffClient(floor,room,clientId,Date.now())
+                storage.turnOffClient(floor,room,clientId,Date.now(),() => {
+                    storage.getCurrentOccupideInRoom(floor,room,(err,res) =>{
+                        if(err==null){
+                            const topic='update/room'
+                            const answer={
+                                count:res,
+                                room:room,
+                                floor:floor
+                            }
+                            console.log('.............')
+                            console.log(JSON.stringify({result:answer}))
+                            server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                        }
+                    })
+                })
+                
             }
 
         }
