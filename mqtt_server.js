@@ -29,9 +29,9 @@ let connection = function Broker() {
         let arrMatches = client.id.match(dibrisScannerPattern);
         if (arrMatches) {
             console.log('new scanner : ', client.id);
-            let floor=client.id.split('\/')[1]
-            let room=client.id.split('\/')[2]
-            storage.insertScanner(floor,room)
+            // let floor=client.id.split('\/')[1]
+            // let room=client.id.split('\/')[2]
+            // storage.insertScanner(floor,room)
 
         }
 
@@ -43,9 +43,9 @@ let connection = function Broker() {
         let arrMatches = client.id.match(dibrisScannerPattern);
         if (arrMatches) {
             console.log('new scanner : ', client.id);
-            let floor=client.id.split('\/')[1]
-            let room=client.id.split('\/')[2]
-            storage.turnOffScanner(floor,room)
+            // let floor=client.id.split('\/')[1]
+            // let room=client.id.split('\/')[2]
+            // storage.turnOffScanner(floor,room)
         }
 
     });
