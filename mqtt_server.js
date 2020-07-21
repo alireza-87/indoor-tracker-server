@@ -70,6 +70,18 @@ let connection = function Broker() {
                             }
                         })
                         break
+                        case "addPerson":
+                            storage.insertPerson(data,(e)=>{
+                                if(e==null){
+                                    const topic='dashboard/'+cId+'/result/success'
+                                    //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
+                                }else{
+                                    const topic='dashboard/'+cId+'/result/fail'
+                                    //server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
+                                }
+                            })
+                            break
+    
                     case "getRoomList":
                         storage.getAllScanners((err,res)=>{
                             if(err==null){

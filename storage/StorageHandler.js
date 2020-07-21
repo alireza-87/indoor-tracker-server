@@ -7,6 +7,7 @@
 const dbs = require('../storage/mongo/DatabaseHandler')
 const ScannerSchema = require('./models/ModelScanner');
 const ClientSchema = require('./models/ModelClient');
+const PersonSchema = require('./models/ModelPerson');
 const NodeCache = require( "node-cache" );
 
 let db
@@ -126,6 +127,26 @@ class StorageHandler{
                 });
             }
         });
+    }
+
+    insertPerson(person,delegate){
+        let data = new PersonSchema({
+            name:person.name,
+            surename:person.surename,
+            rule:person.rule,
+            tell:person.tell,
+            email:person.email,
+            password:person.password,
+            tokenid:person.tokenid
+        })
+
+        db.collection("model_persons").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
+            if(!res){
+                db.collection("model_persons").insertOne(data,(err,res)=>{
+                    delegate()
+                })
+            }
+        })
     }
 
     getAllScanners(delegate){
