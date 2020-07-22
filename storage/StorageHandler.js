@@ -41,7 +41,7 @@ class StorageHandler{
     }
 
     turnOffClient(floor,room,clientId,time,delegate){
-        db.collection("model_persons").findOne({tokenid:clientId},(err,res) => {
+        db.collection("model_user").findOne({tokenid:clientId},(err,res) => {
             if(res){
             db.collection("model_client").findOne({clientId: clientId,floor:floor,room:room},{ sort: { 'created_at' : -1 } },function (err, result) {
                 console.log("turnOffClient")
@@ -65,7 +65,7 @@ class StorageHandler{
 
     insertClient(floor,room,clientId,time,delegate){
 
-        db.collection("model_persons").findOne({tokenid:clientId},function(err,res){
+        db.collection("model_user").findOne({tokenid:clientId},function(err,res){
             if(err){
                 console.log("cant find client 1")
 
@@ -159,9 +159,9 @@ class StorageHandler{
             tokenid:person.tokenid
         })
 
-        db.collection("model_persons").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
+        db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
             if(!res){
-                db.collection("model_persons").insertOne(data,(err,res)=>{
+                db.collection("model_user").insertOne(data,(err,res)=>{
                     delegate()
                 })
             }
@@ -195,7 +195,7 @@ class StorageHandler{
 
     getAllPerson(delegate){
         console.log('getAllPerson')
-        db.collection("model_persons").find({}).toArray(function (err,res){
+        db.collection("model_user").find({}).toArray(function (err,res){
             console.log(res)
             delegate(err,res)
         })

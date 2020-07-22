@@ -10,7 +10,7 @@ let ClientSchema = mongoose.Schema({
     timestamp_out: Number,
     user: {
         type: Schema.Types.ObjectId,
-        ref: "model_persons"
+        ref: "model_user"
       }
 })
 

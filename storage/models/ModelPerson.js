@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-let ClientSchema = mongoose.Schema({
+let UserSchema = mongoose.Schema({
     name: String,
     surename: String,
     rule: String,
@@ -9,4 +9,4 @@ let ClientSchema = mongoose.Schema({
     tokenid: String,
 })
 
-module.exports = mongoose.model('model_persons', ClientSchema,"model_persons");
+module.exports = mongoose.model('model_user', UserSchema,"model_user");
