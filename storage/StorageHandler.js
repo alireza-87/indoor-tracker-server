@@ -67,23 +67,37 @@ class StorageHandler{
             timestamp_in:time,
             room: room,
         })
-        db.collection("model_client").insertOne(data,(error,result)=>{
-            if (error!=null){
-                console.log("insert clint ERROR : ",error)
-            }else{
-                if (myCache.get(floor+"/"+room)){
-                    let array=myCache.get(floor+"/"+room)
-                    array.push(data)
-                    myCache.set(floor+"/"+room,array)
-                }else{
-                    let array = []
-                    array.push(data)
-                    myCache.set(floor+"/"+room,array)
-                }
-                console.log("insert clint success")
-                delegate()
+        db.collection("model_persons").findOne({tokenid:clientId},function(err,res){
+            if(err){
+                console.log("cant find client 1")
+
             }
-        });
+            console.log("can res > ",res)
+
+            if(res){
+                console.log("can find client 1")
+                db.collection("model_client").insertOne(data,(error,result)=>{
+                    if (error!=null){
+                        console.log("insert clint ERROR : ",error)
+                    }else{
+                        if (myCache.get(floor+"/"+room)){
+                            let array=myCache.get(floor+"/"+room)
+                            array.push(data)
+                            myCache.set(floor+"/"+room,array)
+                        }else{
+                            let array = []
+                            array.push(data)
+                            myCache.set(floor+"/"+room,array)
+                        }
+                        console.log("insert clint success")
+                        delegate()
+                    }
+                });
+            }else{
+                console.log("cant find client 2")
+            }
+        })
+        
     }
 
     insertScanner(name,floor,room,capacity,sensorid){
