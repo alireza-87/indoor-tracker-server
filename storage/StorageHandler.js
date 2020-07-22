@@ -70,18 +70,16 @@ class StorageHandler{
                 console.log("cant find client 1")
 
             }
-            console.log("can res > ",res)
-
-            let data = new ClientSchema({
-                clientId: clientId,
-                isConnected: 1,
-                floor: floor,
-                timestamp_in:time,
-                room: room,
-                user:res._id
-            })
-    
+            console.log("can res > ",res)    
             if(res){
+                let data = new ClientSchema({
+                    clientId: clientId,
+                    isConnected: 1,
+                    floor: floor,
+                    timestamp_in:time,
+                    room: room,
+                    user:res._id
+                })    
                 console.log("can find client 1")
                 db.collection("model_client").insertOne(data,(error,result)=>{
                     if (error!=null){
