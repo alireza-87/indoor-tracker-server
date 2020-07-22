@@ -62,21 +62,21 @@ let connection = function Broker() {
                     case "addRoom":
                         storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e)=>{
                             if(e==null){
-                                const topic='dashboard/'+cId+'/result/success'
-                                server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
+                                //const topic='dashboard/'+cId+'/result/success'
+                                //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
                             }else{
-                                const topic='dashboard/'+cId+'/result/fail'
-                                server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
+                                //const topic='dashboard/'+cId+'/result/fail'
+                                //server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
                             }
                         })
                         break
                         case "addPerson":
                             storage.insertPerson(data,(e)=>{
                                 if(e==null){
-                                    const topic='dashboard/'+cId+'/result/success'
+                                    //const topic='dashboard/'+cId+'/result/success'
                                     //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
                                 }else{
-                                    const topic='dashboard/'+cId+'/result/fail'
+                                    //const topic='dashboard/'+cId+'/result/fail'
                                     //server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
                                 }
                             })
@@ -85,22 +85,34 @@ let connection = function Broker() {
                     case "getRoomList":
                         storage.getAllScanners((err,res)=>{
                             if(err==null){
-                                const topic='dashboard/'+cId+'/data/roomList'
-                                server.publish({topic:topic, payload:JSON.stringify({result:res})})
+                                const topic='dashboard/'+cId+'/data'
+                                server.publish({topic:topic, payload:JSON.stringify({type:"roomList",result:res})})
                             }
                         })
                         break;
-                    case "getRoomCount":
+                    case "getPersonList":
+                        storage.getAllPerson((err,res) =>{
+                        // TO DO
+                        })
+
+                    break;   
+                    case "getPersonOfRoom":
                         storage.getCurrentOccupideInRoom(data.floor,data.room,(err,res) =>{
+                            // TO DO
+                        })
+
+                    break;         
+                    case "getRoomCount":
+                        storage.getCurrentCountOccupideInRoom(data.floor,data.room,(err,res) =>{
                             if(err==null){
-                                const topic='dashboard/'+cId+'/data/roomCount'
+                                const topic='dashboard/'+cId+'/data'
                                 const answer={
                                     count:res,
                                     room:data.room,
                                     floor:data.floor
                                 }
                                 console.log(JSON.stringify({result:answer}))
-                                server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                                server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                             }
                         })
                         break;
@@ -126,7 +138,7 @@ let connection = function Broker() {
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
                 storage.insertClient(floor,room,clientId,Date.now(), () => {
-                    storage.getCurrentOccupideInRoom(floor,room,(err,res) =>{
+                    storage.getCurrentCountOccupideInRoom(floor,room,(err,res) =>{
                         if(err==null){
                             const topic='update/room'
                             const answer={
@@ -134,8 +146,8 @@ let connection = function Broker() {
                                 room:room,
                                 floor:floor
                             }
-                            console.log(JSON.stringify({result:answer}))
-                            server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                            console.log(JSON.stringify({type:"roomCount",result:answer}))
+                            server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                         }
                     })
                 })
@@ -172,7 +184,7 @@ let connection = function Broker() {
                             }
                             console.log('.............')
                             console.log(JSON.stringify({result:answer}))
-                            server.publish({topic:topic, payload:JSON.stringify({result:answer})})
+                            server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                         }
                     })
                 })

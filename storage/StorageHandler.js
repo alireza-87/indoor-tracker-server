@@ -41,21 +41,26 @@ class StorageHandler{
     }
 
     turnOffClient(floor,room,clientId,time,delegate){
-        db.collection("model_client").findOne({clientId: clientId,floor:floor,room:room},{ sort: { 'created_at' : -1 } },function (err, result) {
-            console.log("turnOffClient")
-            if (err!=null){
-                console.log("insert clint ERROR : ",err)
-            }else{
-                let newvalues = { $set: {isConnected: 0,timestamp_out:time} };
-                console.log("turnOffClient finded")
-                db.collection("model_client").updateMany({clientId: clientId},newvalues,(err,result)=>{
-                    if (result==null){
-                        console.log("turnOffClient update")
-                    }
-                    delegate()
-                })
+        db.collection("model_persons").findOne({tokenid:clientId},(err,res) => {
+            if(res){
+            db.collection("model_client").findOne({clientId: clientId,floor:floor,room:room},{ sort: { 'created_at' : -1 } },function (err, result) {
+                console.log("turnOffClient")
+                if (err!=null){
+                    console.log("insert clint ERROR : ",err)
+                }else{
+                    let newvalues = { $set: {isConnected: 0,timestamp_out:time} };
+                    console.log("turnOffClient finded")
+                    db.collection("model_client").updateMany({clientId: clientId},newvalues,(err,result)=>{
+                        if (result==null){
+                            console.log("turnOffClient update")
+                        }
+                        delegate()
+                    })
+                }
+            })
             }
         })
+        
     }
 
     insertClient(floor,room,clientId,time,delegate){
@@ -170,7 +175,7 @@ class StorageHandler{
 
     }
 
-    getCurrentOccupideInRoom(floor,room,delegate){
+    getCurrentCountOccupideInRoom(floor,room,delegate){
         console.log(floor,' , ',room)
 
         db.collection("model_client").find({floor:floor,room:room,isConnected:1}).toArray(function (err,res){
@@ -178,6 +183,24 @@ class StorageHandler{
             delegate(err,res.length)
         })
     }
+
+    getCurrentOccupideInRoom(floor,room,delegate){
+        console.log(floor,' , ',room)
+        db.collection("model_client").find({floor:floor,room:room,isConnected:1}).toArray(function (err,res){
+            console.log(res)
+            delegate(err,res)
+        })
+    }
+
+    getAllPerson(delegate){
+        console.log('getAllPerson')
+        db.collection("model_persons").find({}).toArray(function (err,res){
+            console.log(res)
+            delegate(err,res)
+        })
+        
+    }
+
     init(){
         db = dbs.Get();
     }
