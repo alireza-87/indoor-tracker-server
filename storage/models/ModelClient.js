@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-let ClientSchema = mongoose.Schema({
+let UserSchema = mongoose.Schema({
     clientId: String,
     floor: String,
     room: String,
@@ -14,4 +14,4 @@ let ClientSchema = mongoose.Schema({
       }
 })
 
-module.exports = mongoose.model('model_client', ClientSchema,"model_client");
+module.exports = mongoose.model('model_client', UserSchema,"model_client");
