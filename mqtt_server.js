@@ -92,7 +92,11 @@ let connection = function Broker() {
                         break;
                     case "getPersonList":
                         storage.getAllPerson((err,res) =>{
-                        // TO DO
+                            if(err==null){
+                                const topic='dashboard/'+cId+'/data'
+                            
+                                server.publish({topic:topic, payload:JSON.stringify({type:"personList",result:res})})
+                            }
                         })
 
                     break;   
