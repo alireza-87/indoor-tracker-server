@@ -71,7 +71,7 @@ let connection = function Broker() {
                         })
                         break
                         case "addPerson":
-                            storage.insertPerson(data,(e)=>{
+                            storage.addUser(data,(e)=>{
                                 if(e==null){
                                     //const topic='dashboard/'+cId+'/result/success'
                                     //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
@@ -91,7 +91,7 @@ let connection = function Broker() {
                         })
                         break;
                     case "getPersonList":
-                        storage.getAllPerson((err,res) =>{
+                        storage.getAllUser((err,res) =>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
                                 server.publish({topic:topic, payload:JSON.stringify({type:"personList",result:res})})

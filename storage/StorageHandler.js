@@ -148,7 +148,7 @@ class StorageHandler{
         });
     }
 
-    insertPerson(person,delegate){
+    addUser(person,delegate){
         let data = new PersonSchema({
             name:person.name,
             surename:person.surename,
@@ -193,8 +193,8 @@ class StorageHandler{
         })
     }
 
-    getAllPerson(delegate){
-        console.log('getAllPerson')
+    getAllUser(delegate){
+        console.log('getAllUser')
         db.collection("model_user").find({}).toArray(function (err,res){
             console.log(res)
             delegate(err,res)
