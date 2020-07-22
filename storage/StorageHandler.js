@@ -65,13 +65,6 @@ class StorageHandler{
 
     insertClient(floor,room,clientId,time,delegate){
 
-        let data = new ClientSchema({
-            clientId: clientId,
-            isConnected: 1,
-            floor: floor,
-            timestamp_in:time,
-            room: room,
-        })
         db.collection("model_persons").findOne({tokenid:clientId},function(err,res){
             if(err){
                 console.log("cant find client 1")
@@ -79,6 +72,15 @@ class StorageHandler{
             }
             console.log("can res > ",res)
 
+            let data = new ClientSchema({
+                clientId: clientId,
+                isConnected: 1,
+                floor: floor,
+                timestamp_in:time,
+                room: room,
+                user:res._id
+            })
+    
             if(res){
                 console.log("can find client 1")
                 db.collection("model_client").insertOne(data,(error,result)=>{
@@ -186,7 +188,8 @@ class StorageHandler{
 
     getCurrentOccupideInRoom(floor,room,delegate){
         console.log(floor,' , ',room)
-        db.collection("model_client").find({floor:floor,room:room,isConnected:1}).toArray(function (err,res){
+        let mode = new ClientSchema()
+        ClientSchema.find({floor:floor,room:room,isConnected:1}).populate("user").exec(function (err,res){
             console.log(res)
             delegate(err,res)
         })

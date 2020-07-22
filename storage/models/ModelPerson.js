@@ -9,4 +9,4 @@ let ClientSchema = mongoose.Schema({
     tokenid: String,
 })
 
-module.exports = mongoose.model('model_persons', ClientSchema);
+module.exports = mongoose.model('model_persons', ClientSchema,"model_persons");

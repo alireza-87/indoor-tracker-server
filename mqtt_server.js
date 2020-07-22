@@ -94,7 +94,6 @@ let connection = function Broker() {
                         storage.getAllPerson((err,res) =>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
-                            
                                 server.publish({topic:topic, payload:JSON.stringify({type:"personList",result:res})})
                             }
                         })
@@ -102,7 +101,10 @@ let connection = function Broker() {
                     break;   
                     case "getPersonOfRoom":
                         storage.getCurrentOccupideInRoom(data.floor,data.room,(err,res) =>{
-                            // TO DO
+                            if(err==null){
+                                const topic='dashboard/'+cId+'/data'
+                                server.publish({topic:topic, payload:JSON.stringify({type:"personOfRoom",result:res})})
+                            }
                         })
 
                     break;         
@@ -154,6 +156,11 @@ let connection = function Broker() {
                             server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                         }
                     })
+
+                    storage.getCurrentOccupideInRoom(floor,room,(err,res) => {
+                        console.log(err)
+                        console.log(res)
+                    })
                 })
                 
             }else if (enteranceMatches){
@@ -178,7 +185,7 @@ let connection = function Broker() {
                 let room=topic.split('\/')[3]
                 let clientId=topic.split('\/')[4]
                 storage.turnOffClient(floor,room,clientId,Date.now(),() => {
-                    storage.getCurrentOccupideInRoom(floor,room,(err,res) =>{
+                    storage.getCurrentCountOccupideInRoom(floor,room,(err,res) =>{
                         if(err==null){
                             const topic='update/room'
                             const answer={
