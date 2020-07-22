@@ -7,7 +7,7 @@
 const dbs = require('../storage/mongo/DatabaseHandler')
 const ScannerSchema = require('./models/ModelScanner');
 const ClientSchema = require('./models/ModelClient');
-const PersonSchema = require('./models/ModelPerson');
+const PersonSchema = require('./models/ModelUser');
 const NodeCache = require( "node-cache" );
 
 let db
