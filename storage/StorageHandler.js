@@ -15,31 +15,7 @@ const myCache = new NodeCache();
 const scannerCache = new NodeCache();
 
 class StorageHandler{
-    turnOffScanner(floor,room){
-        db.collection("model_scanner").findOne({floor:floor,room:room}, (err, result) => {
-            if (result === null) {
-                console.log("scanner cant find - turnoff")
-
-            } else {
-                console.log("scanner find - turnoff")
-                let newvalues = { $set: {isConnected: 0} };
-                db.collection("model_scanner").updateOne({floor:floor,room:room},newvalues,(error,result)=>{
-                    console.log("scanner update - turnoff")
-                    if (scannerCache.get(floor+"/"+room)) {
-                        let array = scannerCache.get(floor + "/" + room)
-                        array.push(result)
-                        scannerCache.set(floor + "/" + room, array)
-                    }else{
-                        let array = []
-                        array.push(result)
-                        scannerCache.set(floor + "/" + room, array)
-                    }
-                });
-            }
-        });
-
-    }
-
+    //Client Region
     turnOffClient(floor,room,clientId,time,delegate){
         db.collection("model_user").findOne({tokenid:clientId},(err,res) => {
             if(res){
@@ -105,6 +81,76 @@ class StorageHandler{
         
     }
 
+
+    getCurrentClientInRoom(floor,room,delegate){
+        console.log(floor,' , ',room)
+        let mode = new ClientSchema()
+        ClientSchema.find({floor:floor,room:room,isConnected:1}).populate("user").exec(function (err,res){
+            console.log(res)
+            delegate(err,res)
+        })
+    }
+    //End of Client Region
+
+    //User Region
+    addUser(person,delegate){
+        let data = new PersonSchema({
+            name:person.name,
+            surename:person.surename,
+            rule:person.rule,
+            tell:person.tell,
+            email:person.email,
+            password:person.password,
+            tokenid:person.tokenid
+        })
+
+        db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
+            if(!res){
+                db.collection("model_user").insertOne(data,(err,res)=>{
+                    delegate()
+                })
+            }
+        })
+    }
+
+
+    getAllUser(delegate){
+        console.log('getAllUser')
+        db.collection("model_user").find({}).toArray(function (err,res){
+            console.log(res)
+            delegate(err,res)
+        })
+        
+    }
+    //End of user region
+
+    //scanner region
+
+    turnOffScanner(floor,room){
+        db.collection("model_scanner").findOne({floor:floor,room:room}, (err, result) => {
+            if (result === null) {
+                console.log("scanner cant find - turnoff")
+
+            } else {
+                console.log("scanner find - turnoff")
+                let newvalues = { $set: {isConnected: 0} };
+                db.collection("model_scanner").updateOne({floor:floor,room:room},newvalues,(error,result)=>{
+                    console.log("scanner update - turnoff")
+                    if (scannerCache.get(floor+"/"+room)) {
+                        let array = scannerCache.get(floor + "/" + room)
+                        array.push(result)
+                        scannerCache.set(floor + "/" + room, array)
+                    }else{
+                        let array = []
+                        array.push(result)
+                        scannerCache.set(floor + "/" + room, array)
+                    }
+                });
+            }
+        });
+
+    }
+
     insertScanner(name,floor,room,capacity,sensorid){
 
         let data = new ScannerSchema({
@@ -148,32 +194,24 @@ class StorageHandler{
         });
     }
 
-    addUser(person,delegate){
-        let data = new PersonSchema({
-            name:person.name,
-            surename:person.surename,
-            rule:person.rule,
-            tell:person.tell,
-            email:person.email,
-            password:person.password,
-            tokenid:person.tokenid
-        })
-
-        db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
-            if(!res){
-                db.collection("model_user").insertOne(data,(err,res)=>{
-                    delegate()
-                })
-            }
-        })
-    }
-
     getAllScanners(delegate){
         db.collection("model_scanner").find({}).toArray(function(err,res){
             delegate(err,res)
         })
 
     }
+    //end of scanner region
+    
+
+    
+
+    
+
+    
+
+    
+
+    //Statistic
 
     getCurrentCountOccupideInRoom(floor,room,delegate){
         console.log(floor,' , ',room)
@@ -184,23 +222,9 @@ class StorageHandler{
         })
     }
 
-    getCurrentOccupideInRoom(floor,room,delegate){
-        console.log(floor,' , ',room)
-        let mode = new ClientSchema()
-        ClientSchema.find({floor:floor,room:room,isConnected:1}).populate("user").exec(function (err,res){
-            console.log(res)
-            delegate(err,res)
-        })
-    }
+    
 
-    getAllUser(delegate){
-        console.log('getAllUser')
-        db.collection("model_user").find({}).toArray(function (err,res){
-            console.log(res)
-            delegate(err,res)
-        })
-        
-    }
+    
 
     init(){
         db = dbs.Get();

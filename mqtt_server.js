@@ -59,7 +59,7 @@ let connection = function Broker() {
                 let data=JSON.parse(packet.payload.toString())
                 console.log("data =====> ",data)
                 switch(data.type){
-                    case "addRoom":
+                    case "/App/ADD_ROOM":
                         storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e)=>{
                             if(e==null){
                                 //const topic='dashboard/'+cId+'/result/success'
@@ -70,7 +70,7 @@ let connection = function Broker() {
                             }
                         })
                         break
-                        case "addPerson":
+                        case "/App/ADD_PERSON":
                             storage.addUser(data,(e)=>{
                                 if(e==null){
                                     //const topic='dashboard/'+cId+'/result/success'
@@ -82,7 +82,7 @@ let connection = function Broker() {
                             })
                             break
     
-                    case "getRoomList":
+                    case '/App/GET_ROOM_LIST':
                         storage.getAllScanners((err,res)=>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
@@ -90,7 +90,7 @@ let connection = function Broker() {
                             }
                         })
                         break;
-                    case "getPersonList":
+                    case "/App/GET_PERSON_LIST":
                         storage.getAllUser((err,res) =>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
@@ -99,8 +99,8 @@ let connection = function Broker() {
                         })
 
                     break;   
-                    case "getPersonOfRoom":
-                        storage.getCurrentOccupideInRoom(data.floor,data.room,(err,res) =>{
+                    case "/App/GET_PERSON_LIST_OF_ROOM":
+                        storage.getCurrentClientInRoom(data.floor,data.room,(err,res) =>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
                                 server.publish({topic:topic, payload:JSON.stringify({type:"personOfRoom",result:res})})
@@ -108,7 +108,7 @@ let connection = function Broker() {
                         })
 
                     break;         
-                    case "getRoomCount":
+                    case "/App/GET_ROOM_COUNT":
                         storage.getCurrentCountOccupideInRoom(data.floor,data.room,(err,res) =>{
                             if(err==null){
                                 const topic='dashboard/'+cId+'/data'
@@ -157,7 +157,7 @@ let connection = function Broker() {
                         }
                     })
 
-                    storage.getCurrentOccupideInRoom(floor,room,(err,res) => {
+                    storage.getCurrentClientInRoom(floor,room,(err,res) => {
                         console.log(err)
                         console.log(res)
                     })
