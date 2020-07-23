@@ -202,14 +202,12 @@ class StorageHandler{
     }
     //end of scanner region
     
-
-    
-
-    
-
-    
-
-    
+    // auth
+    login(email,pass,delegate){
+        db.collection("model_user").findOne({email:email,password:pass},(err,res)=>{
+            delegate(err,res)
+        })
+    }
 
     //Statistic
 
