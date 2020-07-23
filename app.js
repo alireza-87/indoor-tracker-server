@@ -5,6 +5,7 @@ const storageHandler = require('./storage/StorageHandler')
 const bodyParser = require('body-parser');
 const app = express();
 let cors = require('cors');
+const PersonSchema = require('./storage/models/ModelUser');
 
 require('dotenv/config');
 
@@ -18,3 +19,18 @@ app.use('/login', loginService);
 app.listen(1080);
 
 mqtt.connection()
+
+//init admin
+let data = new PersonSchema({
+    name:'admin',
+    surename:'admin',
+    rule:'admin',
+    tell:'',
+    email:'admin@dashboard.com',
+    password:'admin',
+    tokenid:'root'
+})
+
+storage.addUser(data,() => {
+    
+})

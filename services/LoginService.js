@@ -16,10 +16,10 @@ router.post('/', async (req, res) => {
         console.log("2")
         if(result){
             console.log("3")
-            res.status(200).send({message: 'success'});
+            res.status(200).send({message: 'success',result});
         }else{
             console.log("4")
-            res.status(400).send({message: 'failed'});
+            res.status(400).send({message: 'failed',result});
         }
     })
 });
