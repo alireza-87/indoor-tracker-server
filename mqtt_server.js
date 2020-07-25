@@ -24,28 +24,27 @@ let connection = function Broker() {
 
 
     server.on('clientConnected', function (client) {
-        console.log('new connection : clientConnected => ',client.id);
+        console.log('scanner : scanner Connected => ',client.id);
         let dibrisScannerPattern = new RegExp(/^scanner\/[0-9]*\/[0-9]*$/);
         let arrMatches = client.id.match(dibrisScannerPattern);
         if (arrMatches) {
-            console.log('new scanner : ', client.id);
+            //console.log('new scanner : ', client.id);
             // let floor=client.id.split('\/')[1]
             // let room=client.id.split('\/')[2]
             // storage.insertScanner(floor,room)
-
         }
 
     });
 
     server.on('clientDisconnected', function (client) {
-        console.log('new scanner : clientDisconnected');
+        console.log('scanner : scanner Disconnected');
         let dibrisScannerPattern = new RegExp(/^scanner\/[0-9]*\/[0-9]*$/);
         let arrMatches = client.id.match(dibrisScannerPattern);
         if (arrMatches) {
-            console.log('new scanner : ', client.id);
-            // let floor=client.id.split('\/')[1]
-            // let room=client.id.split('\/')[2]
+            let floor=client.id.split('\/')[1]
+            let room=client.id.split('\/')[2]
             // storage.turnOffScanner(floor,room)
+            storage.turnoffClientOfSensor(floor,room)
         }
 
     });
