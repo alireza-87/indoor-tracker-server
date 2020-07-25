@@ -43,7 +43,6 @@ let connection = function Broker() {
         if (arrMatches) {
             let floor=client.id.split('\/')[1]
             let room=client.id.split('\/')[2]
-            // storage.turnOffScanner(floor,room)
             storage.turnoffClientOfSensor(floor,room)
         }
 
