@@ -12,13 +12,8 @@ require('dotenv/config');
 // Init Storage
 let storage =new storageHandler()
 storage.init()
-app.use(cors());
-
-app.use('/login', loginService);
-
-app.listen(1080);
-
-mqtt.connection()
+//cleanup connected status
+storage.turnoffAllClient()
 
 //init admin
 let data = new PersonSchema({
@@ -34,3 +29,13 @@ let data = new PersonSchema({
 storage.addUser(data,() => {
     
 })
+
+app.use(cors());
+
+app.use('/login', loginService);
+
+app.listen(1080);
+
+mqtt.connection()
+
+

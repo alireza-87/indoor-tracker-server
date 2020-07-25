@@ -16,6 +16,12 @@ const scannerCache = new NodeCache();
 
 class StorageHandler{
     //Client Region
+    turnoffAllClient(){
+        let newvalues = { $set: {isConnected: 0} };
+        db.collection("model_client").updateMany({},newvalues,(err,res)=>{
+
+        })
+    }
     turnOffClient(floor,room,clientId,time,delegate){
         db.collection("model_user").findOne({tokenid:clientId},(err,res) => {
             if(res){
