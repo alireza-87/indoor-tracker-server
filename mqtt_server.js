@@ -10,13 +10,25 @@ let settings = {
     persistence: mosca.persistence.Memory,
     http: {port: 3002, bundle: true, static: './'}
 };
+let server = new mosca.Server(settings, function () {
+    console.log('Mqtt server');
+});
+
+let sendAlarm = (floor,room) =>{
+    //send alarm by mqtt
+    const topic='alarm/room'
+    const answer={
+        type:"roomoverload",
+        room:room,
+        floor:floor
+    }
+    console.log("start publist ",JSON.stringify({type:"roomoverload",result:answer}))
+    server.publish({topic:topic, payload:JSON.stringify({type:"roomoverload",result:answer})})                
+}
 
 let connection = function Broker() {
     //let storage=new storageHandler()
     let storage =new storageHandler()
-    let server = new mosca.Server(settings, function () {
-        console.log('Mqtt server');
-    });
 
     server.on('ready', function () {
         console.log('ready');
@@ -152,6 +164,14 @@ let connection = function Broker() {
                             }
                             console.log(JSON.stringify({type:"roomCount",result:answer}))
                             server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
+                            storage.getScanner(floor,room,(err,result)=>{
+                                if(!err && result){
+                                    console.log(result.capacity," ",res)
+                                    if(res>=result.capacity){
+                                        sendAlarm(floor,room)
+                                    }
+                                }
+                            })
                         }
                     })
                     storage.getUserByTokenid(clientId,(err,res)=>{

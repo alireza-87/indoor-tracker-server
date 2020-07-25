@@ -223,6 +223,12 @@ class StorageHandler{
         })
 
     }
+
+    getScanner(floor,room,delegate){
+        db.collection("model_scanner").findOne({floor:floor,room:room},(err,res)=>{
+            delegate(err,res)
+        })
+    }
     //end of scanner region
     
     // auth
