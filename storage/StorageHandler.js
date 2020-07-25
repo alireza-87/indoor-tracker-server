@@ -138,6 +138,13 @@ class StorageHandler{
         })
         
     }
+
+    getUserByTokenid(tokenid,delegate){
+        console.log("getuser by token ",tokenid)
+        db.collection("model_user").findOne({tokenid:tokenid},(err,res)=>{
+            delegate(err,res)
+        })
+    }
     //End of user region
 
     //scanner region

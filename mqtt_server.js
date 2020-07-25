@@ -154,10 +154,17 @@ let connection = function Broker() {
                             server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                         }
                     })
+                    storage.getUserByTokenid(clientId,(err,res)=>{
+                        const topic='update/useractivity'
+                        const answer={
+                            user:res,
+                            action:"entertoroom",
+                            room:room,
+                            floor:floor
+                        }
+                        console.log("start publist ",JSON.stringify({type:"useractivity",result:answer}))
+                        server.publish({topic:topic, payload:JSON.stringify({type:"useractivity",result:[answer]})})
 
-                    storage.getCurrentClientInRoom(floor,room,(err,res) => {
-                        console.log(err)
-                        console.log(res)
                     })
                 })
                 
@@ -196,6 +203,20 @@ let connection = function Broker() {
                             server.publish({topic:topic, payload:JSON.stringify({type:"roomCount",result:answer})})
                         }
                     })
+
+                    storage.getUserByTokenid(clientId,(err,res)=>{
+                        const topic='update/useractivity'
+                        const answer={
+                            user:res,
+                            action:"exitfromroom",
+                            room:room,
+                            floor:floor
+                        }
+                        console.log("start publist ",JSON.stringify({type:"useractivity",result:answer}))
+                        server.publish({topic:topic, payload:JSON.stringify({type:"useractivity",result:[answer]})})
+
+                    })
+
                 })
                 
             }
