@@ -7,6 +7,7 @@ let UserSchema = mongoose.Schema({
     email: String,
     password: String,
     tokenid: String,
+    uid:{ type: Number, default: 100 }
 })
 
 module.exports = mongoose.model('model_user', UserSchema,"model_user");

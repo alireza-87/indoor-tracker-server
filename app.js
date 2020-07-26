@@ -23,7 +23,8 @@ let data = new PersonSchema({
     tell:'',
     email:'admin@dashboard.com',
     password:'admin',
-    tokenid:'root'
+    tokenid:'root',
+    uid:100
 })
 
 storage.addUser(data,() => {

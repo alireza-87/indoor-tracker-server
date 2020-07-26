@@ -110,22 +110,24 @@ class StorageHandler{
 
     //User Region
     addUser(person,delegate){
-        let data = new PersonSchema({
-            name:person.name,
-            surename:person.surename,
-            rule:person.rule,
-            tell:person.tell,
-            email:person.email,
-            password:person.password,
-            tokenid:person.tokenid
-        })
-
-        db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
-            if(!res){
-                db.collection("model_user").insertOne(data,(err,res)=>{
-                    delegate(err,res)
-                })
-            }
+        this.getMaxUid((err,res)=>{
+            let data = new PersonSchema({
+                name:person.name,
+                surename:person.surename,
+                rule:person.rule,
+                tell:person.tell,
+                email:person.email,
+                password:person.password,
+                tokenid:person.tokenid,
+                uid:res
+            })    
+            db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
+                if(!res){
+                    db.collection("model_user").insertOne(data,(err,res)=>{
+                        delegate(err,res)
+                    })
+                }
+            })    
         })
     }
 
@@ -250,7 +252,22 @@ class StorageHandler{
         })
     }
 
-    
+    getMaxUid(delegate){
+        let mode = new PersonSchema()
+        PersonSchema.find({}).sort({"uid":-1}).limit(1).exec((err,res)=>{
+            console.log
+            if(err===null){
+                if(res.length>0){
+                    const newUid=res[0].uid+1
+                    delegate(null,newUid)
+                }else{
+                    delegate(null,101)
+                }
+            }else{
+                delegate(null,101)
+            }
+        })
+    }
 
     
 
