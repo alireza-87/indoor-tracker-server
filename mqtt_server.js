@@ -22,8 +22,8 @@ let sendAlarm = (floor,room) =>{
         room:room,
         floor:floor
     }
-    console.log("start publist ",JSON.stringify({type:"roomoverload",result:answer}))
-    server.publish({topic:topic, payload:JSON.stringify({type:"roomoverload",result:answer})})                
+    console.log("start publist ",JSON.stringify({type:"roomoverload",result:[answer]}))
+    server.publish({topic:topic, payload:JSON.stringify({type:"roomoverload",result:[answer]})})
 }
 
 let connection = function Broker() {
