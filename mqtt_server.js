@@ -4,6 +4,7 @@
 const mosca = require('mosca');
 //const storageHandler = require('./storage/StorageHandler');
 const storageHandler = require('./storage/StorageHandler')
+let storage =new storageHandler()
 
 let settings = {
     port: 1885,
@@ -24,11 +25,19 @@ let sendAlarm = (floor,room) =>{
     }
     console.log("start publist ",JSON.stringify({type:"roomoverload",result:[answer]}))
     server.publish({topic:topic, payload:JSON.stringify({type:"roomoverload",result:[answer]})})
+    storage.getCurrentClientInRoom(floor,room,(err,res) =>{
+        if(err==null){
+            res.forEach(function(item) {
+                const topic='user/'+'server'+'/'+item.user.uid
+              });              
+            //server.publish({topic:topic, payload:JSON.stringify({type:"personOfRoom",result:res})})
+        }
+    })
+
 }
 
 let connection = function Broker() {
     //let storage=new storageHandler()
-    let storage =new storageHandler()
 
     server.on('ready', function () {
         console.log('ready');
