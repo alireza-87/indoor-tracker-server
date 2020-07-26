@@ -123,7 +123,7 @@ class StorageHandler{
         db.collection("model_user").findOne({$or:[{tokenid:person.tokenid},{email:person.email}]},function(err,res){
             if(!res){
                 db.collection("model_user").insertOne(data,(err,res)=>{
-                    delegate()
+                    delegate(err,res)
                 })
             }
         })
@@ -174,7 +174,7 @@ class StorageHandler{
 
     }
 
-    insertScanner(name,floor,room,capacity,sensorid){
+    insertScanner(name,floor,room,capacity,sensorid,delegate){
 
         let data = new ScannerSchema({
             isConnected: 1,
@@ -197,6 +197,7 @@ class StorageHandler{
                         array.push(data)
                         scannerCache.set(floor + "/" + room, array)
                     }
+                    delegate(err,res)
                 })
             } else {
                 console.log("scanner find - insertScanner")

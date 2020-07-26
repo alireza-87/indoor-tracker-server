@@ -70,25 +70,29 @@ let connection = function Broker() {
                 console.log("data =====> ",data)
                 switch(data.type){
                     case "/App/ADD_ROOM":
-                        storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e)=>{
+                        storage.insertScanner(data.name,data.floor,data.room,data.capacity,data.sensorid,(e,r)=>{
                             if(e==null){
-                                //const topic='dashboard/'+cId+'/result/success'
-                                //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
+                                const topic='dashboard/'+cId+'/result/success'
+                                console.log(" publish >> ",topic)
+                                server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
                             }else{
-                                //const topic='dashboard/'+cId+'/result/fail'
-                                //server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
+                                const topic='dashboard/'+cId+'/result/fail'
+                                console.log(" publish >> ",topic)
+                                server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
                             }
                         })
                         break
                         case "/App/ADD_PERSON":
                             storage.addUser(data,(e)=>{
                                 if(e==null){
-                                    //const topic='dashboard/'+cId+'/result/success'
-                                    //server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
-                                }else{
-                                    //const topic='dashboard/'+cId+'/result/fail'
-                                    //server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
-                                }
+                                    const topic='dashboard/'+cId+'/result/success'
+                                    console.log(" publish >> ",topic)
+                                    server.publish({topic:topic, payload:JSON.stringify({result:"done"})})
+                                    }else{
+                                        const topic='dashboard/'+cId+'/result/fail'
+                                        console.log(" publish >> ",topic)
+                                        server.publish({topic:topic, payload:JSON.stringify({result:"fail"})})
+                                    }
                             })
                             break
     
