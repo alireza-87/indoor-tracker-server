@@ -220,7 +220,8 @@ let connection = function Broker() {
         let floor = topic.split("/")[2];
         let room = topic.split("/")[3];
         let clientId = topic.split("/")[4];
-        storage.insertClient(floor, room, clientId, Date.now(), () => {
+        let timeIn = Date.now();
+        storage.insertClient(floor, room, clientId, timeIn, () => {
           storage.getCurrentCountOccupideInRoom(floor, room, (err, res) => {
             if (err == null) {
               const topic = "update/room";
@@ -253,11 +254,8 @@ let connection = function Broker() {
               action: "entertoroom",
               room: room,
               floor: floor,
+              time: timeIn,
             };
-            console.log(
-              "start publist ",
-              JSON.stringify({ type: "useractivity", result: answer })
-            );
             server.publish({
               topic: topic,
               payload: JSON.stringify({
@@ -287,7 +285,9 @@ let connection = function Broker() {
         let floor = topic.split("/")[2];
         let room = topic.split("/")[3];
         let clientId = topic.split("/")[4];
-        storage.turnOffClient(floor, room, clientId, Date.now(), () => {
+        let timeIn = Date.now();
+
+        storage.turnOffClient(floor, room, clientId, timeIn, () => {
           storage.getCurrentCountOccupideInRoom(floor, room, (err, res) => {
             if (err == null) {
               const topic = "update/room";
@@ -312,11 +312,8 @@ let connection = function Broker() {
               action: "exitfromroom",
               room: room,
               floor: floor,
+              time: timeIn,
             };
-            console.log(
-              "start publist ",
-              JSON.stringify({ type: "useractivity", result: answer })
-            );
             server.publish({
               topic: topic,
               payload: JSON.stringify({
