@@ -25,11 +25,11 @@ let sendAlarm = (floor, room) => {
   };
   console.log(
     "start publist ",
-    JSON.stringify({ type: "roomoverload", result: answer })
+    JSON.stringify({ type: "roomoverload", result: [answer] })
   );
   server.publish({
     topic: topic,
-    payload: JSON.stringify({ type: "roomoverload", result: answer }),
+    payload: JSON.stringify({ type: "roomoverload", result: [answer] }),
   });
 
   storage.getCurrentClientInRoom(floor, room, (err, res) => {
